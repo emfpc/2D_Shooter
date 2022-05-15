@@ -510,6 +510,7 @@ MonoBehaviour:
   _laserPrefab: {fileID: 8180382581072383280, guid: 27b17448ad7d3b34a9dcba6e4a506ab6, type: 3}
   _lasersContainer: {fileID: 40340531}
   _lives: 3
+  _tripleLaserPrefab: {fileID: 3140863869757308838, guid: 340ecef1fff70ae4aaf082a865be0ccf, type: 3}
 --- !u!61 &1376450888
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -596,7 +597,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1376450886}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -2.14, z: 0}
+  m_LocalPosition: {x: 0, y: -0.96, z: 0}
   m_LocalScale: {x: 0.35, y: 0.35, z: 0.35}
   m_ConstrainProportionsScale: 1
   m_Children: []

@@ -9,11 +9,13 @@ public class SpawnManager : MonoBehaviour
     [SerializeField] private GameObject _enemiesContainer;
 
     [SerializeField] private float _secondsToSpawn = 2.5f;
+    private WaitForSeconds _waitForSecondsToSpawn;
     [SerializeField] private bool _isPlayerDead = false;
 
     private void Start()
     {
         StartCoroutine(SpawnEnemy());
+        _waitForSecondsToSpawn = new WaitForSeconds(_secondsToSpawn);
     }
 
     IEnumerator SpawnEnemy()
@@ -25,7 +27,7 @@ public class SpawnManager : MonoBehaviour
 
             Instantiate(_enemyPrefab, _positionToSpawn, Quaternion.identity, _enemiesContainer.transform);
 
-            yield return new WaitForSeconds(_secondsToSpawn);
+            yield return _waitForSecondsToSpawn;
         }
     }
 

@@ -23,6 +23,10 @@ public class Player : MonoBehaviour
     //Managers Variable Section
     private SpawnManager _spawnManager;
 
+    //PowerUp Variable Section
+    [SerializeField] private GameObject _tripleLaserPrefab;
+    private bool _isTrippleShootActive = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -44,7 +48,16 @@ public class Player : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) && Time.time > _canIFire)
         {
             _canIFire = Time.time + _firingRate;
-            Instantiate(_laserPrefab, transform.position + new Vector3(0,0.8f,0), Quaternion.identity,_lasersContainer.transform);
+
+            if(_isTrippleShootActive == true)
+            {
+                Instantiate(_tripleLaserPrefab, transform.position + new Vector3(0, 0.8f, 0), Quaternion.identity, _lasersContainer.transform);
+            }
+            else
+            {
+                Instantiate(_laserPrefab, transform.position + new Vector3(0, 0.8f, 0), Quaternion.identity, _lasersContainer.transform);
+            }
+            
         }
     }
 
