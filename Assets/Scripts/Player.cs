@@ -11,6 +11,7 @@ public class Player : MonoBehaviour
 
     //Projectiles Variable Section
     [SerializeField] private GameObject _laserPrefab;
+    [SerializeField] private GameObject _tripleLaserPrefab;
     [SerializeField] private GameObject _lasersContainer;
 
     //Cooldown Variable Section
@@ -21,19 +22,27 @@ public class Player : MonoBehaviour
     [SerializeField] private int _lives = 3;
 
     //Managers Variable Section
-    private SpawnManager _spawnManager;
+    private SpawnManager[] _spawnManager;
 
     //PowerUp Variable Section
-    [SerializeField] private GameObject _tripleLaserPrefab;
     private bool _isTrippleShootActive = false;
+    private float _tripleShotActiveSeconds = 10f;
+    private WaitForSeconds _tripleShotWaitForSeconds;
+
+    private float _speedActiveSeconds = 8f;
+    private WaitForSeconds _speedWaitForSeconds;
 
     // Start is called before the first frame update
     void Start()
     {
         transform.position = Vector3.zero;
-        _spawnManager = GameObject.Find("SpawnManager").GetComponent<SpawnManager>();
+
+        _spawnManager = GameObject.Find("SpawnManager").GetComponents<SpawnManager>();
         if (_spawnManager == null)
             Debug.Log("SpanwManager is NULL");
+
+        _tripleShotWaitForSeconds = new WaitForSeconds(_tripleShotActiveSeconds);
+        _speedWaitForSeconds = new WaitForSeconds(_speedActiveSeconds);
     }
 
     // Update is called once per frame
@@ -57,7 +66,6 @@ public class Player : MonoBehaviour
             {
                 Instantiate(_laserPrefab, transform.position + new Vector3(0, 0.8f, 0), Quaternion.identity, _lasersContainer.transform);
             }
-            
         }
     }
 
@@ -87,8 +95,35 @@ public class Player : MonoBehaviour
         _lives--;
         if(_lives == 0)
         {
-            _spawnManager.IsPlayerDead(true);
+            foreach (var spawner in _spawnManager)
+                spawner.IsPlayerDead(true);
+
             Destroy(this.gameObject);
         }
+    }
+
+    public void StartTripleShotCoroutine()
+    {
+        StartCoroutine(ActivateTripleShot());
+    }
+
+    public void StartSpeedCoroutine()
+    {
+        StartCoroutine(IncreaseSpeed());
+    }
+
+    IEnumerator ActivateTripleShot()
+    {
+        _isTrippleShootActive = true;
+        yield return _tripleShotWaitForSeconds;
+        _isTrippleShootActive = false;
+    }
+
+    IEnumerator IncreaseSpeed()
+    {
+        var oldSpeed = _speed;
+        _speed = 8;
+        yield return _speedWaitForSeconds;
+        _speed = oldSpeed;
     }
 }
