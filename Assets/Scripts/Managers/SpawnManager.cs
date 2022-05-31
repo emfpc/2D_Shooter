@@ -4,16 +4,28 @@ using UnityEngine;
 
 public class SpawnManager : MonoBehaviour
 {
-    [SerializeField] protected List<GameObject> _objectPrefab = new List<GameObject>();
-    [SerializeField] protected GameObject _objectContainer;
-        
-    [SerializeField] protected float _secondsToSpawnObject;
+    [Header("GameObject List to Spawn Objects")]
+    [SerializeField] private List<GameObject> _objectPrefab = new List<GameObject>();
+    [SerializeField] private GameObject _objectContainer;
+
+    [Header("Time estimated to Spawn the Objects")]
+    [SerializeField] private float _secondsToSpawnObject;
     private WaitForSeconds _waitForSecondsToSpawnObject;
+
     private bool _isPlayerDead = false;
+
+    private void OnEnable()
+    {
+        Player.OnGetIsPlayerDead += IsPlayerDead;
+    }
 
     private void Start()
     {
         _waitForSecondsToSpawnObject = new WaitForSeconds(_secondsToSpawnObject);
+    }
+
+    public void StartSpawning()
+    {
         StartCoroutine(SpawnObjects());
     }
 
@@ -34,5 +46,10 @@ public class SpawnManager : MonoBehaviour
     public void IsPlayerDead(bool playerStatus)
     {
         _isPlayerDead = playerStatus;
+    }
+
+    private void OnDisable()
+    {
+        Player.OnGetIsPlayerDead -= IsPlayerDead;
     }
 }

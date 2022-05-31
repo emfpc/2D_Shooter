@@ -1,15 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class Player : MonoBehaviour
 {
+    public static Action<bool> OnGetIsPlayerDead;
+
+    [Header("Player's Status")]
     [SerializeField] private int _speed;
+    [SerializeField] private int _lives = 3;
     private Vector3 _movement;
     private float _horizontalInput;
     private float _verticalInput;
 
     //Projectiles Variable Section
+    [Header("Lasers Prefabs and Container")]
     [SerializeField] private GameObject _laserPrefab;
     [SerializeField] private GameObject _tripleLaserPrefab;
     [SerializeField] private GameObject _lasersContainer;
@@ -18,11 +24,9 @@ public class Player : MonoBehaviour
     private float _firingRate = 0.2f;
     private float _canIFire = -1f;
 
-    //Lives Variable Section
-    [SerializeField] private int _lives = 3;
-
     //Managers Variable Section
-    private SpawnManager[] _spawnManager;
+    private UIManager _uiManager;
+    private InputManager _inputManager;
 
     //PowerUp Variable Section
     private bool _isTrippleShootActive = false;
@@ -32,14 +36,22 @@ public class Player : MonoBehaviour
     private float _speedActiveSeconds = 8f;
     private WaitForSeconds _speedWaitForSeconds;
 
+    [Tooltip("This object in a Child of the Player object and it will only be enable when Player picks the Power Up Shield")]
+    [SerializeField] GameObject _shieldGameObject;
+    private bool _isShieldActive = false;
+    
+    //Score Variable Section
+    private int _score = 0;
+
     // Start is called before the first frame update
     void Start()
     {
         transform.position = Vector3.zero;
 
-        _spawnManager = GameObject.Find("SpawnManager").GetComponents<SpawnManager>();
-        if (_spawnManager == null)
-            Debug.Log("SpanwManager is NULL");
+        _uiManager = GameObject.Find("UI").GetComponent<UIManager>();
+        _uiManager.PlayerLivesDisplay(_lives);
+
+        _inputManager = GameObject.Find("InputManager").GetComponent<InputManager>();
 
         _tripleShotWaitForSeconds = new WaitForSeconds(_tripleShotActiveSeconds);
         _speedWaitForSeconds = new WaitForSeconds(_speedActiveSeconds);
@@ -54,25 +66,30 @@ public class Player : MonoBehaviour
 
     void ShootingLaser()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && Time.time > _canIFire)
+        if (_inputManager.FireAction() && Time.time > _canIFire)
         {
             _canIFire = Time.time + _firingRate;
 
             if(_isTrippleShootActive == true)
             {
-                Instantiate(_tripleLaserPrefab, transform.position + new Vector3(0, 0.8f, 0), Quaternion.identity, _lasersContainer.transform);
+                InstantiateLasers(_tripleLaserPrefab);
             }
             else
             {
-                Instantiate(_laserPrefab, transform.position + new Vector3(0, 0.8f, 0), Quaternion.identity, _lasersContainer.transform);
+                InstantiateLasers(_laserPrefab);
             }
         }
     }
 
+    void InstantiateLasers(GameObject laserObject)
+    {
+        Instantiate(laserObject, transform.position + new Vector3(0, 0.8f, 0), Quaternion.identity, _lasersContainer.transform);
+    }
+
     void PlayerMovement()
     {
-        _horizontalInput = Input.GetAxisRaw("Horizontal");
-        _verticalInput = Input.GetAxisRaw("Vertical");
+        _horizontalInput = _inputManager.MoveAction().x;
+        _verticalInput = _inputManager.MoveAction().y;
 
         _movement = new Vector3(_horizontalInput, _verticalInput, 0);
 
@@ -92,16 +109,22 @@ public class Player : MonoBehaviour
 
     public void DamagePlayerLives()
     {
+        if (_isShieldActive == true)
+        {
+            ActivateShields(false);
+            return;
+        }
+        
         _lives--;
+        _uiManager.PlayerLivesDisplay(_lives);
+
         if(_lives == 0)
         {
-            foreach (var spawner in _spawnManager)
-                spawner.IsPlayerDead(true);
-
+            OnGetIsPlayerDead(true);
             Destroy(this.gameObject);
         }
     }
-
+    #region PowerUpsSection
     public void StartTripleShotCoroutine()
     {
         StartCoroutine(ActivateTripleShot());
@@ -110,6 +133,12 @@ public class Player : MonoBehaviour
     public void StartSpeedCoroutine()
     {
         StartCoroutine(IncreaseSpeed());
+    }
+
+    public void ActivateShields(bool activateShield)
+    {
+        _isShieldActive = activateShield;
+        _shieldGameObject.SetActive(activateShield);
     }
 
     IEnumerator ActivateTripleShot()
@@ -125,5 +154,12 @@ public class Player : MonoBehaviour
         _speed = 8;
         yield return _speedWaitForSeconds;
         _speed = oldSpeed;
+    }
+    #endregion
+
+    public void AddPointsToScore()
+    {
+        _score += 10;
+        _uiManager.UpdatePlayerScore(_score);
     }
 }

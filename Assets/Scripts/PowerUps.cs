@@ -20,8 +20,7 @@ public class PowerUps : MonoBehaviour
 
         if (transform.position.y <= -5.50f)
         {
-            float _randomX = Random.Range(-8, 8);
-            transform.position = new Vector3(_randomX, 7.5f, 0);
+            Destroy(this.gameObject);
         }
     }
     private void OnTriggerEnter2D(Collider2D other)
