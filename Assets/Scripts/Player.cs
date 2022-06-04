@@ -90,7 +90,7 @@ public class Player : MonoBehaviour
     {
         _horizontalInput = _inputManager.MoveAction().x;
         _verticalInput = _inputManager.MoveAction().y;
-
+        Debug.Log($"X and Y movement {_inputManager.MoveAction()} :: Player Scripts");
         _movement = new Vector3(_horizontalInput, _verticalInput, 0);
 
         transform.Translate(_movement * _speed * Time.deltaTime);
