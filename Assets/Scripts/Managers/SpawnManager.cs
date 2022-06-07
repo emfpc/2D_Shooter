@@ -23,7 +23,10 @@ public class SpawnManager : MonoBehaviour
     {
         _waitForSecondsToSpawnObject = new WaitForSeconds(_secondsToSpawnObject);
     }
-
+    public void CallingToStartSpawning()
+    {
+        Invoke("StartSpawning", 3f);
+    }
     public void StartSpawning()
     {
         StartCoroutine(SpawnObjects());

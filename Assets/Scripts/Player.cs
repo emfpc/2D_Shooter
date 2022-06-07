@@ -20,6 +20,11 @@ public class Player : MonoBehaviour
     [SerializeField] private GameObject _tripleLaserPrefab;
     [SerializeField] private GameObject _lasersContainer;
 
+    //Hurt Engine Section
+    [Header("Players Animations GameObject Fields")]
+    [SerializeField] private GameObject _leftEngineGameObject;
+    [SerializeField] private GameObject _rightEngineGameObject;
+
     //Cooldown Variable Section
     private float _firingRate = 0.2f;
     private float _canIFire = -1f;
@@ -90,7 +95,7 @@ public class Player : MonoBehaviour
     {
         _horizontalInput = _inputManager.MoveAction().x;
         _verticalInput = _inputManager.MoveAction().y;
-        Debug.Log($"X and Y movement {_inputManager.MoveAction()} :: Player Scripts");
+
         _movement = new Vector3(_horizontalInput, _verticalInput, 0);
 
         transform.Translate(_movement * _speed * Time.deltaTime);
@@ -116,6 +121,17 @@ public class Player : MonoBehaviour
         }
         
         _lives--;
+
+        switch (_lives)
+        {
+            case 2:
+                _leftEngineGameObject.SetActive(true);
+            break;
+            case 1:
+                _rightEngineGameObject.SetActive(true);
+                break;
+        }
+
         _uiManager.PlayerLivesDisplay(_lives);
 
         if(_lives == 0)

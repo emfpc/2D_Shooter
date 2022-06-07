@@ -26,10 +26,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void StartGame()
-    {
-
-    }
     public void IsPlayerDead(bool playerLiveStatus)
     {
         _isPlayerDead = playerLiveStatus;
