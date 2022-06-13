@@ -9,6 +9,7 @@ public class InputManager : MonoBehaviour
     private InputAction _moveAction;
     private InputAction _fireAction;
     private InputAction _restartAction;
+    private InputAction _escapeAction;
 
     private void Start()
     {
@@ -16,6 +17,7 @@ public class InputManager : MonoBehaviour
         _moveAction = _playerInputs.actions["Move"];
         _fireAction = _playerInputs.actions["Fire"];
         _restartAction = _playerInputs.actions["Restart"];
+        _escapeAction = _playerInputs.actions["Escape"];
     }
 
     public Vector2 MoveAction()
@@ -31,5 +33,10 @@ public class InputManager : MonoBehaviour
     public bool RestartAction()
     {
         return _restartAction.WasPressedThisFrame();
+    }
+
+    public bool EscapeAction()
+    {
+        return _escapeAction.WasPressedThisFrame();
     }
 }

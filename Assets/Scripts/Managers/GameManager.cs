@@ -24,6 +24,9 @@ public class GameManager : MonoBehaviour
         {
             SceneManager.LoadScene(1);
         }
+
+        if (_inputManager.EscapeAction() == true)
+            Application.Quit();
     }
 
     public void IsPlayerDead(bool playerLiveStatus)

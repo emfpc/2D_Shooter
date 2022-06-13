@@ -9,12 +9,16 @@ public class Asteroid : MonoBehaviour
     private Animator _asteroidAnimator;
     private int _asteroidExplotionAnimID;
 
+    private AudioSource _audioSource;
+    [SerializeField] private AudioClip _explotionEffectAudioClip;
+
     private void Start()
     {
         _spawnManager = GameObject.Find("SpawnManager").GetComponents<SpawnManager>();
         _circleCollider2D = GetComponent<CircleCollider2D>();
         _asteroidAnimator = GetComponent<Animator>();
         _asteroidExplotionAnimID = Animator.StringToHash("AsteroidExplotion");
+        _audioSource = GetComponent<AudioSource>();
     }
 
     private void Update()
@@ -30,6 +34,7 @@ public class Asteroid : MonoBehaviour
             foreach (var spawners in _spawnManager)
                 spawners.CallingToStartSpawning();
 
+            _audioSource.PlayOneShot(_explotionEffectAudioClip);
             _circleCollider2D.enabled = false;
             _asteroidAnimator.SetTrigger(_asteroidExplotionAnimID);
             Destroy(this.gameObject, 5f);

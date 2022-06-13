@@ -6,6 +6,7 @@ public class PowerUpTripleShot : PowerUps
 {
     protected override void ActivatePowerUp()
     {
+        _player.ActivatePowerUpSoudEffect();
         _player.StartTripleShotCoroutine();
         base.ActivatePowerUp();
     }

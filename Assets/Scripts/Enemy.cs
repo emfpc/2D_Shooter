@@ -12,6 +12,18 @@ public class Enemy : MonoBehaviour
 
     private BoxCollider2D _boxCollider2D;
 
+    private AudioSource _audioSource;
+    [SerializeField] private AudioClip _explotionEffectAudioClip;
+
+    //Shooting Variable Section
+    private float _firingRate= 3.0f;
+    private float _canIFire= -1f;
+
+    //Enemy Laser Object Variable Section
+    [Header("Enemy Laser object field")]
+    [SerializeField] private GameObject _enemyLaserPrefab;
+    private GameObject _enemyContainer;
+
     private void Start()
     {
         _player = GameObject.Find("Player").GetComponent<Player>();
@@ -21,10 +33,15 @@ public class Enemy : MonoBehaviour
 
         _boxCollider2D = GetComponent<BoxCollider2D>();
 
+        _audioSource = GetComponent<AudioSource>();
+
+        _enemyContainer = GameObject.Find("[--ENEMIES CONTAINER--]");
+
     }
     private void Update()
     {
         EnemyMovement();
+        EnemyShooting();
     }
 
     void EnemyMovement()
@@ -35,6 +52,18 @@ public class Enemy : MonoBehaviour
         {
             float _randomX = Random.Range(-8, 8);
             transform.position = new Vector3(_randomX, 7.5f, 0);
+        }
+    }
+
+    void EnemyShooting()
+    {
+        Debug.Log("I can shoot :: EnemyScript");
+        if(Time.time > _canIFire)
+        {
+            Debug.Log("I can shoot V2 :: EnemyScript");
+            _firingRate = Random.Range(3f, 7f);
+            _canIFire = Time.time + _firingRate;
+            Instantiate(_enemyLaserPrefab, transform.position, Quaternion.identity, _enemyContainer.transform);
         }
     }
     
@@ -60,6 +89,7 @@ public class Enemy : MonoBehaviour
 
     void OnEnemyDeath()
     {
+        _audioSource.PlayOneShot(_explotionEffectAudioClip);
         _speed = 0f;
         _enemyAnimator.SetTrigger(_enemyDestroyedTriggerID);
         _boxCollider2D.enabled = false;

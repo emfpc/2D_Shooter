@@ -6,6 +6,7 @@ public class PowerUpShield : PowerUps
 {
     protected override void ActivatePowerUp()
     {
+        _player.ActivatePowerUpSoudEffect();
         _player.ActivateShields(true);
         base.ActivatePowerUp();
     }

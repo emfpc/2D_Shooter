@@ -6,6 +6,7 @@ public class PowerUpSpeed : PowerUps
 {
     protected override void ActivatePowerUp()
     {
+        _player.ActivatePowerUpSoudEffect();
         _player.StartSpeedCoroutine();
         base.ActivatePowerUp();
     }

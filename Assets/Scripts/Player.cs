@@ -48,6 +48,12 @@ public class Player : MonoBehaviour
     //Score Variable Section
     private int _score = 0;
 
+    //Audio Variable Section
+    [Header("Audio Clips")]
+    [SerializeField] private AudioClip _fireLaserAudioClipEffect;
+    [SerializeField] private AudioClip _powerUpsAudioClipEffect;
+    private AudioSource _audioSorce;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -57,6 +63,8 @@ public class Player : MonoBehaviour
         _uiManager.PlayerLivesDisplay(_lives);
 
         _inputManager = GameObject.Find("InputManager").GetComponent<InputManager>();
+
+        _audioSorce = GetComponent<AudioSource>();
 
         _tripleShotWaitForSeconds = new WaitForSeconds(_tripleShotActiveSeconds);
         _speedWaitForSeconds = new WaitForSeconds(_speedActiveSeconds);
@@ -75,9 +83,12 @@ public class Player : MonoBehaviour
         {
             _canIFire = Time.time + _firingRate;
 
+            _audioSorce.PlayOneShot(_fireLaserAudioClipEffect);
+
             if(_isTrippleShootActive == true)
             {
                 InstantiateLasers(_tripleLaserPrefab);
+
             }
             else
             {
@@ -155,6 +166,11 @@ public class Player : MonoBehaviour
     {
         _isShieldActive = activateShield;
         _shieldGameObject.SetActive(activateShield);
+    }
+
+    public void ActivatePowerUpSoudEffect()
+    {
+        _audioSorce.PlayOneShot(_powerUpsAudioClipEffect);
     }
 
     IEnumerator ActivateTripleShot()
