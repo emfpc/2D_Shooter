@@ -8,6 +8,7 @@ public class UIManager : MonoBehaviour
 {
     [Header("TextMeshProUGUI field for Score")]
     [SerializeField] private TextMeshProUGUI _scoreText;
+    [SerializeField] private TextMeshProUGUI _ammoText;
 
     [Header("Player lives display section")]
     [SerializeField] private Image _liveImageHolder;
@@ -17,6 +18,9 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject _gameOverPanelObj;
     [SerializeField] private GameObject _gameOverTextObj;
     private WaitForSeconds _waitForSecondsGameOverText;
+
+    [Header("Thruster Slider section")]
+    [SerializeField] private Slider _thrusterSliderObjt;
 
     private void OnEnable()
     {
@@ -29,14 +33,22 @@ public class UIManager : MonoBehaviour
 
     public void UpdatePlayerScore(int updatedScore)
     {
-        _scoreText.text = "Score: " + updatedScore.ToString();
+        _scoreText.text = $"Score: {updatedScore}";
     }
 
+    public void UpdatePlayerAmmoCount(int updateAmmoCount)
+    {
+        _ammoText.text = $"Ammo: {updateAmmoCount}";
+    }
     public void PlayerLivesDisplay(int livesId)
     {
         _liveImageHolder.sprite = _livesSpritesList[livesId];
     }
 
+    public void ThrusterSlider(float sliderStatus)
+    {
+        _thrusterSliderObjt.value = sliderStatus;
+    }
     public void GameOverPanel(bool gameOverPanelStatus)
     {
         _gameOverPanelObj.SetActive(gameOverPanelStatus);

@@ -57,10 +57,8 @@ public class Enemy : MonoBehaviour
 
     void EnemyShooting()
     {
-        Debug.Log("I can shoot :: EnemyScript");
         if(Time.time > _canIFire)
         {
-            Debug.Log("I can shoot V2 :: EnemyScript");
             _firingRate = Random.Range(3f, 7f);
             _canIFire = Time.time + _firingRate;
             Instantiate(_enemyLaserPrefab, transform.position, Quaternion.identity, _enemyContainer.transform);
@@ -75,18 +73,26 @@ public class Enemy : MonoBehaviour
             {
                 _player.DamagePlayerLives();
             }
-
             OnEnemyDeath();
         }
 
         if (other.CompareTag("Laser"))
         {
-            _player.AddPointsToScore();
-            Destroy(other.gameObject);
-            OnEnemyDeath();
+            DamageByWeapon(other.gameObject);
+        }
+
+        if (other.CompareTag("HeatSeekingMissel"))
+        {
+            DamageByWeapon(other.gameObject);
         }
     }
 
+    void DamageByWeapon(GameObject weaponObject)
+    {
+        _player.AddPointsToScore();
+        Destroy(weaponObject.gameObject);
+        OnEnemyDeath();
+    }
     void OnEnemyDeath()
     {
         _audioSource.PlayOneShot(_explotionEffectAudioClip);

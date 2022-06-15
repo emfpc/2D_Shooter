@@ -8,8 +8,9 @@ public class Player : MonoBehaviour
     public static Action<bool> OnGetIsPlayerDead;
 
     [Header("Player's Status")]
-    [SerializeField] private int _speed;
     [SerializeField] private int _lives = 3;
+    private int _speed;
+    private int _normalSpeed = 5;
     private Vector3 _movement;
     private float _horizontalInput;
     private float _verticalInput;
@@ -34,6 +35,7 @@ public class Player : MonoBehaviour
     private InputManager _inputManager;
 
     //PowerUp Variable Section
+    private int _speedPowerUp = 8;
     private bool _isTrippleShootActive = false;
     private float _tripleShotActiveSeconds = 10f;
     private WaitForSeconds _tripleShotWaitForSeconds;
@@ -54,6 +56,20 @@ public class Player : MonoBehaviour
     [SerializeField] private AudioClip _powerUpsAudioClipEffect;
     private AudioSource _audioSorce;
 
+    //Phase I
+    private Animator _cameraAnimator;
+    private bool _isHeatMisseleActive = false;
+    private float _heatMisseleShotActiveSeconds = 10f;
+    private WaitForSeconds _heatMisseleShotWaitForSeconds;
+    [SerializeField] private bool _canThrusterBeUse=true;
+    private int _thrustersSpeed = 10;
+    [SerializeField] private float _fillMinus;
+    [SerializeField] private float _fillPlus;
+    private int _shieldLifeSpan = 3;
+    private int _ammo = 15;
+    private SpriteRenderer _shieldSpriteRenderer;
+    [SerializeField] private GameObject _heatMisselePrefab;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -61,6 +77,8 @@ public class Player : MonoBehaviour
 
         _uiManager = GameObject.Find("UI").GetComponent<UIManager>();
         _uiManager.PlayerLivesDisplay(_lives);
+        _uiManager.UpdatePlayerAmmoCount(_ammo);
+        _uiManager.ThrusterSlider(100);
 
         _inputManager = GameObject.Find("InputManager").GetComponent<InputManager>();
 
@@ -68,6 +86,9 @@ public class Player : MonoBehaviour
 
         _tripleShotWaitForSeconds = new WaitForSeconds(_tripleShotActiveSeconds);
         _speedWaitForSeconds = new WaitForSeconds(_speedActiveSeconds);
+        _heatMisseleShotWaitForSeconds = new WaitForSeconds(_heatMisseleShotActiveSeconds);
+        _shieldSpriteRenderer = _shieldGameObject.GetComponent<SpriteRenderer>();
+        _cameraAnimator = Camera.main.GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -75,20 +96,35 @@ public class Player : MonoBehaviour
     {
         ShootingLaser();
         PlayerMovement();
+
+        if(_canThrusterBeUse == true)
+        {
+            Thruster();
+        }else if (_canThrusterBeUse == false){
+            ReplenishThruster();
+        }
+        Debug.Log(_inputManager.ThrustersAction());
     }
 
     void ShootingLaser()
     {
-        if (_inputManager.FireAction() && Time.time > _canIFire)
+        if (_inputManager.FireAction() && Time.time > _canIFire && _ammo > 0)
         {
+            _ammo--;
+            _uiManager.UpdatePlayerAmmoCount(_ammo);
+
             _canIFire = Time.time + _firingRate;
 
             _audioSorce.PlayOneShot(_fireLaserAudioClipEffect);
 
-            if(_isTrippleShootActive == true)
+            if (_isTrippleShootActive == true && _isHeatMisseleActive == false)
             {
                 InstantiateLasers(_tripleLaserPrefab);
 
+            }
+            else if (_isHeatMisseleActive == true && _isTrippleShootActive == false)
+            {
+                Instantiate(_heatMisselePrefab);
             }
             else
             {
@@ -123,25 +159,72 @@ public class Player : MonoBehaviour
         }
     }
 
+    void Thruster()
+    {
+        if (_inputManager.ThrustersAction() == true )
+        {
+            _fillMinus = 100 - (10.0f * Time.time);
+            _uiManager.ThrusterSlider(_fillMinus);
+
+            if (_fillMinus <= 0)
+            {
+                _fillMinus = 0;
+                _canThrusterBeUse = false;
+                return;
+            }
+
+            PlayerSpeed(_thrustersSpeed);
+            return;
+        }
+
+        PlayerSpeed(_normalSpeed);
+    }
+
+    void ReplenishThruster()
+    {
+        _fillPlus = 0.0f + (3.0f * Time.time);
+        _uiManager.ThrusterSlider(_fillPlus);
+
+        if (_fillPlus >= 100)
+        {
+            _fillPlus = 0;
+            _canThrusterBeUse = true;
+            return;
+        }
+    }
+
+    void  PlayerSpeed(int playerSpeed)
+    {
+        _speed = playerSpeed;
+    }
+
     public void DamagePlayerLives()
     {
+        _cameraAnimator.SetTrigger("CameraShake");
         if (_isShieldActive == true)
         {
-            ActivateShields(false);
+            _shieldLifeSpan--;
+
+            if(_shieldLifeSpan < 1)
+                ActivateShields(false);
+
+            switch (_shieldLifeSpan)
+            {
+                case 2:
+                    _shieldSpriteRenderer.color = Color.yellow;
+                    break;
+                case 1:
+                    _shieldSpriteRenderer.color = Color.red;
+                    break;
+                default:
+                    break;
+            }
             return;
         }
         
         _lives--;
 
-        switch (_lives)
-        {
-            case 2:
-                _leftEngineGameObject.SetActive(true);
-            break;
-            case 1:
-                _rightEngineGameObject.SetActive(true);
-                break;
-        }
+        PlayerHurtStatus(_lives);
 
         _uiManager.PlayerLivesDisplay(_lives);
 
@@ -157,6 +240,10 @@ public class Player : MonoBehaviour
         StartCoroutine(ActivateTripleShot());
     }
 
+    public void StartHeatMisseleCoroutine()
+    {
+        StartCoroutine(ActivateHeatMissele());
+    }
     public void StartSpeedCoroutine()
     {
         StartCoroutine(IncreaseSpeed());
@@ -179,19 +266,58 @@ public class Player : MonoBehaviour
         yield return _tripleShotWaitForSeconds;
         _isTrippleShootActive = false;
     }
-
+    IEnumerator ActivateHeatMissele()
+    {
+        _isHeatMisseleActive = true;
+        yield return _heatMisseleShotWaitForSeconds;
+        _isHeatMisseleActive = false;
+    }
     IEnumerator IncreaseSpeed()
     {
-        var oldSpeed = _speed;
-        _speed = 8;
+        PlayerSpeed(_speedPowerUp);
         yield return _speedWaitForSeconds;
-        _speed = oldSpeed;
+        PlayerSpeed(_speed);
     }
     #endregion
 
+    #region CollectableSection
+    public void ReplenishAmmo()
+    {
+        _ammo = 15;
+    }
+
+    public void ReplenishLives()
+    {
+        if(_lives < 3)
+        {
+            _lives++;
+            _uiManager.PlayerLivesDisplay(_lives);
+            PlayerHurtStatus(_lives);
+        }
+    }
+    #endregion
     public void AddPointsToScore()
     {
         _score += 10;
         _uiManager.UpdatePlayerScore(_score);
+    }
+
+    public void PlayerHurtStatus(int hurtStatus)
+    {
+        switch (hurtStatus)
+        {
+            case 2:
+                _leftEngineGameObject.SetActive(true);
+                _rightEngineGameObject.SetActive(false);
+                break;
+            case 1:
+                _leftEngineGameObject.SetActive(true);
+                _rightEngineGameObject.SetActive(true);
+                break;
+            default:
+                _leftEngineGameObject.SetActive(false);
+                _rightEngineGameObject.SetActive(false);
+                break;
+        }
     }
 }

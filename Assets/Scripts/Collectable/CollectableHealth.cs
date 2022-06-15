@@ -2,12 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PowerUpShield : PowerUps
+public class CollectableHealth : Collectable
 {
     protected override void ActivatePowerUp()
     {
         _player.ActivatePowerUpSoudEffect();
-        _player.ActivateShields(true);
+        _player.ReplenishLives();
         base.ActivatePowerUp();
     }
 }

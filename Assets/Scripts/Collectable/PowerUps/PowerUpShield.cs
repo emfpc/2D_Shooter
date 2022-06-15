@@ -2,12 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PowerUpTripleShot : PowerUps
+public class PowerUpShield : Collectable
 {
     protected override void ActivatePowerUp()
     {
         _player.ActivatePowerUpSoudEffect();
-        _player.StartTripleShotCoroutine();
+        _player.ActivateShields(true);
         base.ActivatePowerUp();
     }
 }

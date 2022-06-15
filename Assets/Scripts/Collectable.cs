@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PowerUps : MonoBehaviour
+public class Collectable : MonoBehaviour
 {
     private float _speed = 3f;
     protected Player _player;

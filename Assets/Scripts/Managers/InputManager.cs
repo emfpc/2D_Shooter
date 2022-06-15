@@ -10,6 +10,7 @@ public class InputManager : MonoBehaviour
     private InputAction _fireAction;
     private InputAction _restartAction;
     private InputAction _escapeAction;
+    private InputAction _thrustersAction;
 
     private void Start()
     {
@@ -18,6 +19,7 @@ public class InputManager : MonoBehaviour
         _fireAction = _playerInputs.actions["Fire"];
         _restartAction = _playerInputs.actions["Restart"];
         _escapeAction = _playerInputs.actions["Escape"];
+        _thrustersAction = _playerInputs.actions["Thrusters"];
     }
 
     public Vector2 MoveAction()
@@ -38,5 +40,11 @@ public class InputManager : MonoBehaviour
     public bool EscapeAction()
     {
         return _escapeAction.WasPressedThisFrame();
+    }
+
+    public bool ThrustersAction()
+    {
+        bool thrustersAction = _thrustersAction.ReadValue<float>() != 0 ? true : false;
+        return thrustersAction;
     }
 }
