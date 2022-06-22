@@ -6,6 +6,7 @@ using System;
 public class Player : MonoBehaviour
 {
     public static Action<bool> OnGetIsPlayerDead;
+    public static Action<bool, Transform> OnGetPlayerCallingForPowerUps;
 
     [Header("Player's Status")]
     [SerializeField] private int _lives = 3;
@@ -63,12 +64,15 @@ public class Player : MonoBehaviour
     private WaitForSeconds _heatMisseleShotWaitForSeconds;
     [SerializeField] private bool _canThrusterBeUse=true;
     private int _thrustersSpeed = 10;
-    [SerializeField] private float _fillMinus;
-    [SerializeField] private float _fillPlus;
+    private float _thrustersFill = 100;
     private int _shieldLifeSpan = 3;
     private int _ammo = 15;
     private SpriteRenderer _shieldSpriteRenderer;
     [SerializeField] private GameObject _heatMisselePrefab;
+
+    //Phase II
+    private int _ammoMax = 15;
+    private bool _isNegativeEffectActive = false;
 
     // Start is called before the first frame update
     void Start()
@@ -77,7 +81,7 @@ public class Player : MonoBehaviour
 
         _uiManager = GameObject.Find("UI").GetComponent<UIManager>();
         _uiManager.PlayerLivesDisplay(_lives);
-        _uiManager.UpdatePlayerAmmoCount(_ammo);
+        _uiManager.UpdatePlayerAmmoCount(_ammo, _ammoMax);
         _uiManager.ThrusterSlider(100);
 
         _inputManager = GameObject.Find("InputManager").GetComponent<InputManager>();
@@ -97,13 +101,31 @@ public class Player : MonoBehaviour
         ShootingLaser();
         PlayerMovement();
 
-        if(_canThrusterBeUse == true)
-        {
+        if(_canThrusterBeUse == true && _isNegativeEffectActive == false)
             Thruster();
-        }else if (_canThrusterBeUse == false){
+        else if (_canThrusterBeUse == false)
             ReplenishThruster();
+
+        CallingForPowerUps();
+
+    }
+
+    void CallingForPowerUps()
+    {
+        if (Input.GetKey(KeyCode.C) == true)
+        {
+            OnGetCallingForPowerUps(true, this.gameObject.transform);
         }
-        Debug.Log(_inputManager.ThrustersAction());
+        else if (Input.GetKey(KeyCode.C) == false)
+        {
+            OnGetCallingForPowerUps(false, this.gameObject.transform);
+        }
+    }
+
+    void OnGetCallingForPowerUps(bool status, Transform pos)
+    {
+        if (OnGetPlayerCallingForPowerUps != null)
+            OnGetPlayerCallingForPowerUps(status, pos);
     }
 
     void ShootingLaser()
@@ -111,7 +133,7 @@ public class Player : MonoBehaviour
         if (_inputManager.FireAction() && Time.time > _canIFire && _ammo > 0)
         {
             _ammo--;
-            _uiManager.UpdatePlayerAmmoCount(_ammo);
+            _uiManager.UpdatePlayerAmmoCount(_ammo, _ammoMax);
 
             _canIFire = Time.time + _firingRate;
 
@@ -163,14 +185,13 @@ public class Player : MonoBehaviour
     {
         if (_inputManager.ThrustersAction() == true )
         {
-            _fillMinus = 100 - (10.0f * Time.time);
-            _uiManager.ThrusterSlider(_fillMinus);
+            _thrustersFill -= 10.0f * Time.deltaTime;
+            _uiManager.ThrusterSlider(_thrustersFill);
 
-            if (_fillMinus <= 0)
+            if(_thrustersFill <= 0)
             {
-                _fillMinus = 0;
+                _thrustersFill = 0f;
                 _canThrusterBeUse = false;
-                return;
             }
 
             PlayerSpeed(_thrustersSpeed);
@@ -182,14 +203,15 @@ public class Player : MonoBehaviour
 
     void ReplenishThruster()
     {
-        _fillPlus = 0.0f + (3.0f * Time.time);
-        _uiManager.ThrusterSlider(_fillPlus);
+        PlayerSpeed(_normalSpeed);
 
-        if (_fillPlus >= 100)
+        _thrustersFill += 3.0f * Time.deltaTime;
+        _uiManager.ThrusterSlider(_thrustersFill);
+
+        if(_thrustersFill >= 100)
         {
-            _fillPlus = 0;
+            _thrustersFill = 100;
             _canThrusterBeUse = true;
-            return;
         }
     }
 
@@ -247,6 +269,20 @@ public class Player : MonoBehaviour
     public void StartSpeedCoroutine()
     {
         StartCoroutine(IncreaseSpeed());
+    }
+
+    public void StartNegativeEffect()
+    {
+        StartCoroutine(ActivateNegativeEffect());
+    }
+    IEnumerator ActivateNegativeEffect()
+    {
+        _isNegativeEffectActive = true;
+        _lives--;
+        PlayerHurtStatus(_lives);
+        _uiManager.PlayerLivesDisplay(_lives);
+        yield return new WaitForSeconds(5f);
+        _isNegativeEffectActive = false;
     }
 
     public void ActivateShields(bool activateShield)

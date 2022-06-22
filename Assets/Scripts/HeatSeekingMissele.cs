@@ -40,6 +40,15 @@ public class HeatSeekingMissele : MonoBehaviour
     {
         _enemyShipsObject = GameObject.FindGameObjectsWithTag("Enemy");
         _enemyShipsObject = _enemyShipsObject.OrderBy((en) => Vector3.Distance(en.transform.position, transform.position)).ToArray();
-        transform.position = Vector3.MoveTowards(transform.position, _enemyShipsObject[0].transform.position, 12 * Time.deltaTime);
+       
+        if(_enemyShipsObject.Count() != 0)
+        {
+            if (_enemyShipsObject[0] != null)
+                transform.position = Vector3.MoveTowards(transform.position, _enemyShipsObject[0].transform.position, 12 * Time.deltaTime);
+        }
+        else
+        {
+            Destroy(this.gameObject, 5f);
+        }
     }
 }

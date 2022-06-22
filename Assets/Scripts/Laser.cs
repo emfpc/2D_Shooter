@@ -6,7 +6,7 @@ public class Laser : MonoBehaviour
 {
     [SerializeField] private float _speed = 7.5f;
     [SerializeField] private bool _isThisAEnemyLaser = false;
-
+    private bool _isThisATorpedo = false;
     // Update is called once per frame
     void Update()
     {
@@ -47,7 +47,7 @@ public class Laser : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.CompareTag("Player") && _isThisAEnemyLaser == true)
+        if (other.gameObject.CompareTag("Player") && _isThisAEnemyLaser == true || _isThisATorpedo == true )
         {
             var player = other.gameObject.GetComponent<Player>();
             if(player != null)
@@ -56,5 +56,11 @@ public class Laser : MonoBehaviour
                 Destroy(this.gameObject);
             }
         }
+    }
+
+    public void LaserStatus()
+    {
+        _isThisAEnemyLaser = false;
+        _isThisATorpedo = true;
     }
 }

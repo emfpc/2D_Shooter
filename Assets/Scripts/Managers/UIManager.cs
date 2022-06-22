@@ -22,6 +22,9 @@ public class UIManager : MonoBehaviour
     [Header("Thruster Slider section")]
     [SerializeField] private Slider _thrusterSliderObjt;
 
+    [Header("Wave text indicator section")]
+    [SerializeField] private TextMeshProUGUI _waveText;
+
     private void OnEnable()
     {
         Player.OnGetIsPlayerDead += GameOverPanel;
@@ -36,9 +39,9 @@ public class UIManager : MonoBehaviour
         _scoreText.text = $"Score: {updatedScore}";
     }
 
-    public void UpdatePlayerAmmoCount(int updateAmmoCount)
+    public void UpdatePlayerAmmoCount(int updateAmmoCount, int ammoMax)
     {
-        _ammoText.text = $"Ammo: {updateAmmoCount}";
+        _ammoText.text = $"Ammo: {updateAmmoCount} / {ammoMax}";
     }
     public void PlayerLivesDisplay(int livesId)
     {
@@ -48,6 +51,11 @@ public class UIManager : MonoBehaviour
     public void ThrusterSlider(float sliderStatus)
     {
         _thrusterSliderObjt.value = sliderStatus;
+    }
+
+    public void WaveTextIndicator(int waveTxt)
+    {
+        _waveText.text = $"WAVE {waveTxt}";
     }
     public void GameOverPanel(bool gameOverPanelStatus)
     {

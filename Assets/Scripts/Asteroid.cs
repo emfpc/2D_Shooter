@@ -5,6 +5,7 @@ using UnityEngine;
 public class Asteroid : MonoBehaviour
 {
     private SpawnManager[] _spawnManager;
+    private SpawnSystem _spawnSystem;
     private CircleCollider2D _circleCollider2D;
     private Animator _asteroidAnimator;
     private int _asteroidExplotionAnimID;
@@ -15,6 +16,7 @@ public class Asteroid : MonoBehaviour
     private void Start()
     {
         _spawnManager = GameObject.Find("SpawnManager").GetComponents<SpawnManager>();
+        _spawnSystem = GameObject.Find("WaveSystem").GetComponent<SpawnSystem>();
         _circleCollider2D = GetComponent<CircleCollider2D>();
         _asteroidAnimator = GetComponent<Animator>();
         _asteroidExplotionAnimID = Animator.StringToHash("AsteroidExplotion");
@@ -30,6 +32,8 @@ public class Asteroid : MonoBehaviour
         if (other.CompareTag("Laser"))
         {
             Destroy(other.gameObject);
+
+            _spawnSystem.StartWave();
 
             foreach (var spawners in _spawnManager)
                 spawners.CallingToStartSpawning();

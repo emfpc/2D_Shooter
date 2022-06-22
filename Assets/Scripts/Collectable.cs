@@ -4,35 +4,59 @@ using UnityEngine;
 
 public class Collectable : MonoBehaviour
 {
-    private float _speed = 3f;
+    [SerializeField] protected float _speed = 3f;
     protected Player _player;
 
+    private bool _isPlayerCallingForCollectables = false;
+    private Transform _moveToPlayer;
+
+    private void OnEnable()
+    {
+        Player.OnGetPlayerCallingForPowerUps += PlayerCallingForCollectable;
+    }
     private void Start()
     {
-        _player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
-        if (_player == null)
-            Debug.Log("Player is NULL :: PowerUps Script");
+        if(GameObject.Find("Player") != null)
+            _player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
     }
 
     private void Update()
     {
-        transform.Translate(Vector3.down * _speed * Time.deltaTime);
-
-        if (transform.position.y <= -5.50f)
+        if(_isPlayerCallingForCollectables == true)
         {
-            Destroy(this.gameObject);
+            transform.position = Vector3.MoveTowards(transform.position, _moveToPlayer.position, 10 * Time.deltaTime);
+        }else if(_isPlayerCallingForCollectables == false)
+        {
+            transform.Translate(Vector3.down * _speed * Time.deltaTime);
+
+            if (transform.position.y <= -5.50f)
+            {
+                Destroy(this.gameObject);
+            }
         }
+    }
+
+    private void PlayerCallingForCollectable(bool collectableToMoveStatus, Transform nextPos)
+    {
+        _isPlayerCallingForCollectables = collectableToMoveStatus;
+        _moveToPlayer = nextPos;
     }
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player"))
-        {
             ActivatePowerUp();
-        }
+
+        if (other.CompareTag("Torpedo"))
+            Destroy(this.gameObject);
     }
 
     protected virtual void ActivatePowerUp()
     {
         Destroy(this.gameObject);
+    }
+
+    private void OnDisable()
+    {
+        Player.OnGetPlayerCallingForPowerUps -= PlayerCallingForCollectable;
     }
 }

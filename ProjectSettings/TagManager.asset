@@ -12,6 +12,10 @@ TagManager:
   - Shield
   - EnemyLaser
   - HeatSeekingMissel
+  - SpinEnemy
+  - Torpedo
+  - EnemyBoss
+  - EnemyBossBullet
   layers:
   - Default
   - TransparentFX
