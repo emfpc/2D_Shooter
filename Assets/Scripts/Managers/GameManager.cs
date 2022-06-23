@@ -32,9 +32,9 @@ public class GameManager : MonoBehaviour
         {
             SceneManager.LoadScene(1);
         }
-
+        //
         if (_inputManager.EscapeAction() == true)
-            Application.Quit();
+            SceneManager.LoadScene(0);
     }
 
     void CheckForEnemyBoss()

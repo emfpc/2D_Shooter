@@ -13,5 +13,9 @@ MonoBehaviour:
   m_Name: Wave002
   m_EditorClassIdentifier: 
   _willThisBeARandomWave: 0
-  objectToSpawnOnThisWave: []
+  objectToSpawnOnThisWave:
+  - objectID: 0
+    gameObjectToSpawn: {fileID: 0}
+  - objectID: 0
+    gameObjectToSpawn: {fileID: 0}
   amountToSpawnOnThisWave: 0
