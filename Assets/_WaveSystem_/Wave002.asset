@@ -10,10 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8cca9e5d013752b46aa6f2e3324f69d0, type: 3}
-  m_Name: Wave 05
+  m_Name: Wave002
   m_EditorClassIdentifier: 
-  _thisEnemyIsABoss: 1
-  objectToSpawnOnThisWave:
-  - objectID: 0
-    gameObjectToSpawn: {fileID: 5904226237814237832, guid: 09d7d9943e4a49f44ad8870372d4f6f7, type: 3}
-  amountToSpawnOnThisWave: 1
+  _willThisBeARandomWave: 0
+  objectToSpawnOnThisWave: []
+  amountToSpawnOnThisWave: 0

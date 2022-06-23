@@ -41,6 +41,8 @@ public class Enemy : MonoBehaviour
     private bool _willEnemyHaveShield = false;
     private int _randomIndexForShield = 0;
 
+    [SerializeField] private bool _doseEnemyMoveBackward = false;
+
     private void OnEnable()
     {
         _isEnemyDead = false;
@@ -107,7 +109,11 @@ public class Enemy : MonoBehaviour
         if (_isEnemyBeingAggressive == true)
             return;
 
-        objectToMove.Translate(Vector3.down * _speed * Time.deltaTime);
+        if (_doseEnemyMoveBackward == false)
+            objectToMove.Translate(Vector3.down * _speed * Time.deltaTime);
+
+        if (_doseEnemyMoveBackward == true)
+            objectToMove.Translate(-Vector3.down * _speed * Time.deltaTime);
 
         if(transform.position.y <= -5.50f)
         {
@@ -157,8 +163,6 @@ public class Enemy : MonoBehaviour
             {
                 _isEnemyBeingAggressive = false;
             }
-               
-            Debug.Log($"Player Distance {distance} :: EnemyScript");
         }
     }
 

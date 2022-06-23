@@ -13,6 +13,7 @@ public class Player : MonoBehaviour
     private int _speed;
     private int _normalSpeed = 5;
     private Vector3 _movement;
+    private float _vectorClampPosition;
     private float _horizontalInput;
     private float _verticalInput;
 
@@ -74,9 +75,15 @@ public class Player : MonoBehaviour
     private int _ammoMax = 15;
     private bool _isNegativeEffectActive = false;
 
+    private void OnEnable()
+    {
+        GameManager.OnGetEnemyBossHasArrived += PlayersVectorClampPosition;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
+
         transform.position = Vector3.zero;
 
         _uiManager = GameObject.Find("UI").GetComponent<UIManager>();
@@ -93,6 +100,9 @@ public class Player : MonoBehaviour
         _heatMisseleShotWaitForSeconds = new WaitForSeconds(_heatMisseleShotActiveSeconds);
         _shieldSpriteRenderer = _shieldGameObject.GetComponent<SpriteRenderer>();
         _cameraAnimator = Camera.main.GetComponent<Animator>();
+
+        PlayersVectorClampPosition(-3.8f);
+
     }
 
     // Update is called once per frame
@@ -100,8 +110,8 @@ public class Player : MonoBehaviour
     {
         ShootingLaser();
         PlayerMovement();
-
-        if(_canThrusterBeUse == true && _isNegativeEffectActive == false)
+    
+        if (_canThrusterBeUse == true && _isNegativeEffectActive == false)
             Thruster();
         else if (_canThrusterBeUse == false)
             ReplenishThruster();
@@ -169,7 +179,8 @@ public class Player : MonoBehaviour
 
         transform.Translate(_movement * _speed * Time.deltaTime);
 
-        transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, -3.8f, 0), 0);
+        transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, _vectorClampPosition, 0), 0);
+        //transform.position = _vectorClampPosition;
 
         if (transform.position.x > 11.3f)
         {
@@ -179,6 +190,11 @@ public class Player : MonoBehaviour
         {
             transform.position = new Vector3(11.3f, transform.position.y, 0);
         }
+    }
+
+    public void PlayersVectorClampPosition(float clampYPosition)
+    {
+        _vectorClampPosition = clampYPosition;
     }
 
     void Thruster()
@@ -355,5 +371,10 @@ public class Player : MonoBehaviour
                 _rightEngineGameObject.SetActive(false);
                 break;
         }
+    }
+
+    private void OnDisable()
+    {
+        GameManager.OnGetEnemyBossHasArrived -= PlayersVectorClampPosition;
     }
 }

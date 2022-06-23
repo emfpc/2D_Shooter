@@ -9,7 +9,7 @@ public class EnemyBoss : MonoBehaviour
     [SerializeField] private GameObject _enemyBossBulletPrefab;
 
     [SerializeField] private List<Transform> _transformListToSpawn = new List<Transform>();
-
+    [SerializeField]
     private int _enemyBossLives = 20;
 
     //Shooting Variable Section

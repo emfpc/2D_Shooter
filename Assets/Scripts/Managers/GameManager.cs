@@ -2,11 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System;
 
 public class GameManager : MonoBehaviour
 {
+    public static Action<float> OnGetEnemyBossHasArrived;
+
     private bool _isPlayerDead = false;
-    [SerializeField]
     private bool _hasEnemyBossArrived = false;
     [SerializeField] private Camera _mainCamera;
 
@@ -15,7 +17,6 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         _inputManager = GameObject.Find("InputManager").GetComponent<InputManager>();
-       
     }
 
     private void OnEnable()
@@ -24,14 +25,8 @@ public class GameManager : MonoBehaviour
     }
     private void Update()
     {
-        if(_hasEnemyBossArrived == false)
-        {
-            if (GameObject.Find("EnemyBoss") != null)
-                _hasEnemyBossArrived = true;
-        }
-
-        if (_hasEnemyBossArrived == true)
-            _mainCamera.orthographicSize = 8;
+        //CheckForEnemyBoss();
+        Invoke("CheckForEnemyBoss", 3f);
 
         if(_isPlayerDead == true & _inputManager.RestartAction())
         {
@@ -42,6 +37,24 @@ public class GameManager : MonoBehaviour
             Application.Quit();
     }
 
+    void CheckForEnemyBoss()
+    {
+        var enemyBoss = GameObject.FindGameObjectsWithTag("EnemyBoss");
+        foreach (var bossEnemy in enemyBoss)
+            if (bossEnemy.activeInHierarchy == true)
+            {
+                _hasEnemyBossArrived = true;
+                OnGetEnemyBossHasArrived(-7f);
+            }
+                
+        /*
+        if (_hasEnemyBossArrived == false)
+            if (enemyBoss[0].activeInHierarchy == true)
+                _hasEnemyBossArrived = true;
+        */
+        if (_hasEnemyBossArrived == true)
+            _mainCamera.orthographicSize = 8;
+    }
     public void IsPlayerDead(bool playerLiveStatus)
     {
         _isPlayerDead = playerLiveStatus;

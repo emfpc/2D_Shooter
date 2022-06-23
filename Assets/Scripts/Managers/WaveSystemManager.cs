@@ -7,10 +7,6 @@ public class WaveSystemManager : MonoBehaviour
     [Header("Holding field for the waves")]
     [SerializeField] private WaveSystemSO[] _wavesReference;
 
-    public bool IsThisEnemyABoss(int waveId)
-    {
-        return _wavesReference[waveId]._thisEnemyIsABoss;
-    }
     public int WavesReferenceLenght()
     {
         return _wavesReference.Length;
