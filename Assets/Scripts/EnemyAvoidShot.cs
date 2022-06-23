@@ -27,6 +27,10 @@ public class EnemyAvoidShot : MonoBehaviour
 
     [SerializeField] private EnemySensor _enemySensor;
 
+    private void OnEnable()
+    {
+        _speed = 4.8f;
+    }
     private void Start()
     {
         _player = GameObject.Find("Player").GetComponent<Player>();

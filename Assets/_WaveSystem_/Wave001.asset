@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8cca9e5d013752b46aa6f2e3324f69d0, type: 3}
   m_Name: Wave001
   m_EditorClassIdentifier: 
-  _willThisBeARandomWave: 0
+  _willThisBeARandomWave: 1
   objectToSpawnOnThisWave:
   - objectID: 0
     gameObjectToSpawn: {fileID: 6490114172944691398, guid: aa84d0d3026e653488673e89945b4925, type: 3}

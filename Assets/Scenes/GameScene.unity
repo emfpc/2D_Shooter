@@ -3007,11 +3007,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _wavesReference:
-  - {fileID: 11400000, guid: baa80a7553742884f93ce6cdd703a347, type: 2}
-  - {fileID: 11400000, guid: 02d24d0af50a2e44e8cf8c22d80b8480, type: 2}
-  - {fileID: 11400000, guid: 92dc49b530953b34481468a3165bd216, type: 2}
-  - {fileID: 11400000, guid: ed51a48ebb0b80248a57581af5bdf262, type: 2}
-  - {fileID: 11400000, guid: d370764e8f2fe0d4fa81e4fdca1629e5, type: 2}
+  - {fileID: 11400000, guid: 96502590b881ecd43aeab9bb7ffa06a2, type: 2}
+  - {fileID: 11400000, guid: f662407d83f3026409aaa6799fc16eab, type: 2}
+  - {fileID: 11400000, guid: 22ae56d0aaee43f4397dc7558a96b6b0, type: 2}
+  - {fileID: 11400000, guid: 6c3a518f4f9280f4e9373847b45ec1fe, type: 2}
 --- !u!4 &1814290932 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8635513473277008419, guid: ccd1897a7b037e543a2882829c675773, type: 3}

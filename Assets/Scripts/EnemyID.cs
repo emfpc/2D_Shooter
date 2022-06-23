@@ -8,7 +8,7 @@ public enum ID
     SpinEnemy,
     EnemyAvoidShot,
     EnemyFighter,
-    EnemySensor,
+    EnemyDestroyer,
     EnemyBoss
 }
 

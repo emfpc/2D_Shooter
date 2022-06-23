@@ -10,12 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8cca9e5d013752b46aa6f2e3324f69d0, type: 3}
-  m_Name: Wave002
+  m_Name: Wave003
   m_EditorClassIdentifier: 
   _willThisBeARandomWave: 1
   objectToSpawnOnThisWave:
-  - objectID: 2
-    gameObjectToSpawn: {fileID: 535411399951480700, guid: e5acde0d06763784f8667512fb8aea6a, type: 3}
-  - objectID: 3
-    gameObjectToSpawn: {fileID: 7789568470191164283, guid: 947e104b44bdb2c439e5b5478fd7c25f, type: 3}
-  amountToSpawnOnThisWave: 2
+  - objectID: 0
+    gameObjectToSpawn: {fileID: 6490114172944691398, guid: aa84d0d3026e653488673e89945b4925, type: 3}
+  - objectID: 1
+    gameObjectToSpawn: {fileID: 3302473439614013491, guid: 384ad0adc232d814484bb64bb0d8b359, type: 3}
+  - objectID: 4
+    gameObjectToSpawn: {fileID: 3397727872916673588, guid: fef6e637d861b0f4dad0f66482375a90, type: 3}
+  amountToSpawnOnThisWave: 3
