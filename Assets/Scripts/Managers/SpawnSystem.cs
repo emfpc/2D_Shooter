@@ -80,6 +80,7 @@ public class SpawnSystem : MonoBehaviour
             if((_waveNumber +1) > _waveSystemManager.WavesReferenceLenght())
             {
                 _uiManager.WaveTextIndicator(0);
+                _uiManager.PlayerWonPanel(true);
                 _waveNumber = 0;
                 _objectDestroyed = 0;
             }

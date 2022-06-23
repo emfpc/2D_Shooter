@@ -19,6 +19,9 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject _gameOverTextObj;
     private WaitForSeconds _waitForSecondsGameOverText;
 
+    [Header("You won Panel Section")]
+    [SerializeField] private GameObject _playerWonPanelObj;
+
     [Header("Thruster Slider section")]
     [SerializeField] private Slider _thrusterSliderObjt;
 
@@ -63,6 +66,10 @@ public class UIManager : MonoBehaviour
         StartCoroutine(GameOverFlickingAnimation());
     }
 
+    public void PlayerWonPanel(bool playerWonPanelStatus)
+    {
+        _playerWonPanelObj.SetActive(playerWonPanelStatus);
+    }
     IEnumerator GameOverFlickingAnimation()
     {
         while (true)
